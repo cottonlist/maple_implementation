@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <pthread.h>
 #include <assert.h>
 #include <unistd.h>
@@ -24,12 +25,14 @@ void begin(int index)
 		while (!signaled2){
 			pthread_cond_wait(&cond2, &lock1);
 		}
+		signaled2 = 0;
 		pthread_mutex_unlock(&lock1);
 	} else if (index == 1002) {
 		pthread_mutex_lock(&lock2);
 		while (!signaled1){
 			pthread_cond_wait(&cond1, &lock2);
 		}
+		signaled1 = 0;
 		pthread_mutex_unlock(&lock2);
 	}
 }
@@ -47,7 +50,7 @@ void end(int index)
 		pthread_cond_signal(&cond1);
 		signaled1 = 1;
 		pthread_mutex_unlock(&lock2);
-	}
+	} 
 }
 
 void crash()
@@ -55,7 +58,9 @@ void crash()
 	fprintf(stderr, "crash()\n");
 }
 
-void* func1(void* x) {
+void *
+func1(void *arg)
+{
 	begin(1001);
 	a = 1;
 	end(1001);
@@ -65,7 +70,8 @@ void* func1(void* x) {
 	return NULL;
 }
 
-void * func2 (void * y)
+void *
+func2 (void *arg)
 {
 	begin(2001);
 	if (a==1) {
@@ -75,13 +81,17 @@ void * func2 (void * y)
 	return NULL;
 }
 
-int main() {
-	pthread_t t1, t2;
+int
+main(void)
+{
+	pthread_t t1;
+	pthread_t t2;
+	
 	pthread_create(&t1, NULL, func1, NULL);
 	pthread_create(&t2, NULL, func2, NULL);
 	
-	//assert(a != 1);
-
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
+	
+	exit(0);
 }
