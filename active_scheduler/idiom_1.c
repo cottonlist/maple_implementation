@@ -15,7 +15,8 @@ pthread_cond_t cond2 = PTHREAD_COND_INITIALIZER;
 int signaled1 = 0;
 int signaled2 = 0;
 
-void begin(int index)
+void
+begin(int index)
 {
 	fprintf(stderr, "begin(%d)\n", index);
 	if (index == 1001) {
@@ -37,7 +38,8 @@ void begin(int index)
 	}
 }
 
-void end(int index)
+void
+end(int index)
 {
 	fprintf(stderr, "end(%d)\n", index);
 	if (index == 1001) {
@@ -53,7 +55,8 @@ void end(int index)
 	} 
 }
 
-void crash()
+void
+crash()
 {
 	fprintf(stderr, "crash()\n");
 }
