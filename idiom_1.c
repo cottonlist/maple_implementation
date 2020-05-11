@@ -11,6 +11,9 @@ pthread_mutex_t m2;
 pthread_cond_t s1;
 pthread_cond_t s2;
 
+int waited1 = 0;
+int waited2 = 0;
+
 int signaled1 = 0;
 int signaled2 = 0;
 
@@ -24,11 +27,13 @@ void begin(int index)
 		pthread_mutex_lock(&m1);
 		//if (signaled1)
 		pthread_cond_wait(&s2, &m1);
+		waited2 = 1;
 		pthread_mutex_unlock(&m1);
 	} else if (index == 1002) {
 		pthread_mutex_lock(&m2);
 		//if (signaled2)
 		pthread_cond_wait(&s1, &m2);
+		waited1 = 1;
 		pthread_mutex_unlock(&m2);
 	}
 }
@@ -37,8 +42,14 @@ void end(int index)
 {
 	fprintf(stderr, "end(%d)\n", index);
 	if (index == 1001) {
+		while(!waited2){
+			;
+		}
 		pthread_cond_signal(&s2);
 	} else if (index == 2001) {
+		while(!waited1){
+			;
+		}
 		pthread_cond_signal(&s1);
 	}
 }
