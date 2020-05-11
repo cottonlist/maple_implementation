@@ -5,11 +5,11 @@
 
 int a = 0;
 
-pthread_mutex_t m1 = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t m2 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t lock1 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t lock2 = PTHREAD_MUTEX_INITIALIZER;
 
-pthread_cond_t s1 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t s2 = PTHREAD_COND_INITIALIZER;
+pthread_cond_t cond1 = PTHREAD_COND_INITIALIZER;
+pthread_cond_t cond2 = PTHREAD_COND_INITIALIZER;
 
 int signaled1 = 0;
 int signaled2 = 0;
@@ -20,17 +20,17 @@ void begin(int index)
 	if (index == 1001) {
 		// do nothing
 	} else if (index == 2001) {
-		pthread_mutex_lock(&m1);
+		pthread_mutex_lock(&lock1);
 		while (!signaled2){
-			pthread_cond_wait(&s2, &m1);
+			pthread_cond_wait(&cond2, &lock1);
 		}
-		pthread_mutex_unlock(&m1);
+		pthread_mutex_unlock(&lock1);
 	} else if (index == 1002) {
-		pthread_mutex_lock(&m2);
+		pthread_mutex_lock(&lock2);
 		while (!signaled1){
-			pthread_cond_wait(&s1, &m2);
+			pthread_cond_wait(&cond1, &lock2);
 		}
-		pthread_mutex_unlock(&m2);
+		pthread_mutex_unlock(&lock2);
 	}
 }
 
@@ -38,15 +38,15 @@ void end(int index)
 {
 	fprintf(stderr, "end(%d)\n", index);
 	if (index == 1001) {
-		pthread_mutex_lock(&m1);
-		pthread_cond_signal(&s2);
+		pthread_mutex_lock(&lock1);
+		pthread_cond_signal(&cond2);
 		signaled2 = 1;
-		pthread_mutex_unlock(&m1);
+		pthread_mutex_unlock(&lock1);
 	} else if (index == 2001) {
-		pthread_mutex_lock(&m2);
-		pthread_cond_signal(&s1);
+		pthread_mutex_lock(&lock2);
+		pthread_cond_signal(&cond1);
 		signaled1 = 1;
-		pthread_mutex_unlock(&m2);
+		pthread_mutex_unlock(&lock2);
 	}
 }
 
