@@ -8,7 +8,8 @@ typedef struct
 	int score;
 }student;
 
-typedef struct {
+typedef struct
+{
 	pthread_mutex_t lock;
 	pthread_cond_t cond;
 	int isSignaled;
@@ -46,7 +47,8 @@ void
 trigger_wait(trigger *t)
 {
 	pthread_mutex_lock(&(t->lock));
-	while (!t->isSignaled){
+	while (!t->isSignaled)
+	{
 		pthread_cond_wait(&(t->cond), &(t->lock));
 	}
 	t->isSignaled = 0;
@@ -60,7 +62,7 @@ void
 begin (int index)
 {
 	fprintf(stderr, "begin(%d)\n", index);
-	if (index == 1001) {
+	if (index == 1001){
 		// do nothing
 	} else if (index == 2001){
 		trigger_wait(trigger2);
@@ -73,11 +75,9 @@ void
 end (int index)
 {
 	fprintf(stderr, "end(%d)\n", index);
-	if (index == 1001)
-	{
+	if (index == 1001){
 		trigger_signal(trigger2);
-	} else if (index == 2001)
-	{
+	} else if (index == 2001){
 		trigger_signal(trigger1);
 	}
 }
@@ -92,12 +92,10 @@ void *
 func1 (void *std)
 {
 	begin(1001);
-	if (((student *)std)->score >= 60)
-	{
+	if (((student *)std)->score >= 60){
 		end(1001);
 		begin(1002);
-		if (((student *)std)->score < 60)
-		{
+		if (((student *)std)->score < 60){
 			crash();
 		}
 		end(1002);
@@ -115,7 +113,8 @@ func2 (void *std)
 	return NULL;
 }
 
-int main() {
+int main()
+{
 	student taro = {80};
 
 	student *student1 = &taro;
