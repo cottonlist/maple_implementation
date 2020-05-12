@@ -6,14 +6,61 @@
 
 int a = 0;
 
-pthread_mutex_t lock1 = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t lock2 = PTHREAD_MUTEX_INITIALIZER;
+typedef struct {
+	pthread_mutex_t lock;
+	pthread_cond_t cond;
+	int isSignaled;
+} trigger;
 
-pthread_cond_t cond1 = PTHREAD_COND_INITIALIZER;
-pthread_cond_t cond2 = PTHREAD_COND_INITIALIZER;
 
-int signaled1 = 0;
-int signaled2 = 0;
+
+trigger *
+trigger_init()
+{
+	trigger *t = (trigger *) malloc(sizeof(trigger));
+	//trigger *t = (trigger *) calloc(1, sizeof(trigger));
+	
+	pthread_mutex_init(&(t->lock), NULL);
+	pthread_cond_init(&(t->cond), NULL);
+	
+	//t->lock = PTHREAD_MUTEX_INITIALIZER;
+	//t->cond = PTHREAD_COND_INITIALIZER;
+	t->isSignaled = 0;
+	
+	return t;
+}
+
+void
+trigger_destroy(trigger *t)
+{
+	pthread_mutex_destroy(&(t->lock));
+	pthread_cond_destroy(&(t->cond));
+	
+	free(t);
+}
+
+void
+trigger_signal(trigger *t)
+{
+	pthread_mutex_lock(&(t->lock));
+	pthread_cond_signal(&(t->cond));
+	t->isSignaled = 1;
+	pthread_mutex_unlock(&(t->lock));
+}
+
+void
+trigger_wait(trigger *t)
+{
+	pthread_mutex_lock(&(t->lock));
+	while (!t->isSignaled){
+		pthread_cond_wait(&(t->cond), &(t->lock));
+	}
+	t->isSignaled = 0;
+	pthread_mutex_unlock(&(t->lock));
+}
+
+trigger *trigger1 = NULL;
+trigger *trigger2 = NULL;
 
 void
 begin(int index)
@@ -22,19 +69,9 @@ begin(int index)
 	if (index == 1001) {
 		// do nothing
 	} else if (index == 2001) {
-		pthread_mutex_lock(&lock1);
-		while (!signaled2){
-			pthread_cond_wait(&cond2, &lock1);
-		}
-		signaled2 = 0;
-		pthread_mutex_unlock(&lock1);
+		trigger_wait(trigger2);
 	} else if (index == 1002) {
-		pthread_mutex_lock(&lock2);
-		while (!signaled1){
-			pthread_cond_wait(&cond1, &lock2);
-		}
-		signaled1 = 0;
-		pthread_mutex_unlock(&lock2);
+		trigger_wait(trigger1);
 	}
 }
 
@@ -43,15 +80,9 @@ end(int index)
 {
 	fprintf(stderr, "end(%d)\n", index);
 	if (index == 1001) {
-		pthread_mutex_lock(&lock1);
-		pthread_cond_signal(&cond2);
-		signaled2 = 1;
-		pthread_mutex_unlock(&lock1);
+		trigger_signal(trigger2);
 	} else if (index == 2001) {
-		pthread_mutex_lock(&lock2);
-		pthread_cond_signal(&cond1);
-		signaled1 = 1;
-		pthread_mutex_unlock(&lock2);
+		trigger_signal(trigger1);
 	} 
 }
 
@@ -87,6 +118,9 @@ func2 (void *arg)
 int
 main(void)
 {
+	trigger1 = trigger_init();
+	trigger2 = trigger_init();
+	
 	pthread_t t1;
 	pthread_t t2;
 	
@@ -95,6 +129,10 @@ main(void)
 	
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
+	
+	trigger_destroy(trigger1);
+	trigger_destroy(trigger2);
+
 	
 	exit(0);
 }
