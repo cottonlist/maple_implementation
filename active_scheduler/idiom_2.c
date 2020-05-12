@@ -68,6 +68,8 @@ begin (int index)
 		trigger_wait(trigger2);
 	} else if (index == 1002){
 		trigger_wait(trigger1);
+	} else if (index == 2002){
+		trigger_wait(trigger2);
 	}
 }
 
@@ -79,6 +81,10 @@ end (int index)
 		trigger_signal(trigger2);
 	} else if (index == 2001){
 		trigger_signal(trigger1);
+	} else if (index == 2002){
+		// do nothing
+	} else if (index == 1002){
+		trigger_signal(trigger2);
 	}
 }
 
@@ -110,6 +116,9 @@ func2 (void *std)
 	((student *)std)->score = 30;
 	//std = NULL;
 	end(2001);
+	begin(2002);
+	((student *)std)->score = 80;
+	end(2002);
 	return NULL;
 }
 
