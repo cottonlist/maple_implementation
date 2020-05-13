@@ -1,12 +1,11 @@
 # Makefile
-
-all: idiom_1
-
+all: idiom_1 idiom_2
 clean:
-	rm idiom_1
-
-run: idiom_1
-	./idiom_1
-
+    rm idiom_1 idiom_2
+run: idiom_2
+    ./idiom_2
 idiom_1: idiom_1.c
-	gcc -pthread -o idiom_1 idiom_1.c
+    gcc -pthread -o idiom_1 idiom_1.c
+idiom_2: idiom_2.c
+    gcc -pthread -o idiom_2 idiom_2.c
+    
