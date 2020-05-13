@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include <assert.h>
 #include <unistd.h>
+
+int exe_order[3] = {1001, 2001, 1002};
 
 int a = 0;
 
@@ -11,8 +12,6 @@ typedef struct {
 	pthread_cond_t cond;
 	int isSignaled;
 } trigger;
-
-
 
 trigger *
 trigger_init()
@@ -66,11 +65,9 @@ void
 begin(int index)
 {
 	fprintf(stderr, "begin(%d)\n", index);
-	if (index == 1001) {
-		// do nothing
-	} else if (index == 2001) {
+	if (index == exe_order[1]) {
 		trigger_wait(trigger2);
-	} else if (index == 1002) {
+	} else if (index == exe_order[2]) {
 		trigger_wait(trigger1);
 	}
 }
@@ -79,9 +76,9 @@ void
 end(int index)
 {
 	fprintf(stderr, "end(%d)\n", index);
-	if (index == 1001) {
+	if (index == exe_order[0]) {
 		trigger_signal(trigger2);
-	} else if (index == 2001) {
+	} else if (index == exe_order[1]) {
 		trigger_signal(trigger1);
 	} 
 }
