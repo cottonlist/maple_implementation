@@ -20,18 +20,12 @@ void
 begin(int index)
 {
 	fprintf(stderr, "begin(%d)\n", index);
-	if (index == exec_order[1])
-	{
-		trigger_wait(trigger1);
-	} else if (index == exec_order[2])
+	if ((index != exec_order[0]) && (index/1000 == 2))
 	{
 		trigger_wait(trigger2);
-	} else if (index == exec_order[4])
+	} else if ((index != exec_order[0]) && (index/1000 == 1))
 	{
 		trigger_wait(trigger1);
-	} else if (index == exec_order[5])
-	{
-		trigger_wait(trigger2);
 	}
 }
 
@@ -39,20 +33,52 @@ void
 end(int index)
 {
 	fprintf(stderr, "end(%d)\n", index);
-	if (index == exec_order[0])
-	{
-		trigger_signal(trigger1);
-	} else if (index == exec_order[1])
+	if ((index != exec_order[EXEC_LENGTH-1]) && (index/1000 == 1))
 	{
 		trigger_signal(trigger2);
-	} else if (index == exec_order[3])
+	} else if ((index != exec_order[EXEC_LENGTH-1]) && (index/1000 == 2))
 	{
 		trigger_signal(trigger1);
-	} else if (index == exec_order[4])
-	{
-		trigger_signal(trigger2);
-	}
+	} 
 }
+
+// void
+// begin(int index)
+// {
+// 	fprintf(stderr, "begin(%d)\n", index);
+// 	if (index == exec_order[1])
+// 	{
+// 		trigger_wait(trigger1);
+// 	} else if (index == exec_order[2])
+// 	{
+// 		trigger_wait(trigger2);
+// 	} else if (index == exec_order[4])
+// 	{
+// 		trigger_wait(trigger1);
+// 	} else if (index == exec_order[5])
+// 	{
+// 		trigger_wait(trigger2);
+// 	}
+// }
+
+// void
+// end(int index)
+// {
+// 	fprintf(stderr, "end(%d)\n", index);
+// 	if (index == exec_order[0])
+// 	{
+// 		trigger_signal(trigger1);
+// 	} else if (index == exec_order[1])
+// 	{
+// 		trigger_signal(trigger2);
+// 	} else if (index == exec_order[3])
+// 	{
+// 		trigger_signal(trigger1);
+// 	} else if (index == exec_order[4])
+// 	{
+// 		trigger_signal(trigger2);
+// 	}
+// }
 
 void
 crash()

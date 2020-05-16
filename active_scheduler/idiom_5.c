@@ -4,6 +4,10 @@
 
 #include "trigger.h"
 
+#define EXEC_LENGTH 2
+
+int exec_order[EXEC_LENGTH] = {1001, 2001};
+
 pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t mutex2 = PTHREAD_MUTEX_INITIALIZER;
 
@@ -14,10 +18,10 @@ void
 begin(int index)
 {
 	fprintf(stderr, "begin(%d)\n", index);
-	if (index == 2001)
+	if ((index != exec_order[0]) && (index/1000 == 2))
 	{
 		trigger_wait(trigger2);
-	} else if (index == 1002)
+	} else if ((index != exec_order[0]) && (index/1000 == 1))
 	{
 		trigger_wait(trigger1);
 	}
@@ -27,14 +31,40 @@ void
 end(int index)
 {
 	fprintf(stderr, "end(%d)\n", index);
-	if (index == 1001)
+	if ((index != exec_order[EXEC_LENGTH-1]) && (index/1000 == 1))
 	{
 		trigger_signal(trigger2);
-	} else if (index == 2001)
+	} else if ((index != exec_order[EXEC_LENGTH-1]) && (index/1000 == 2))
 	{
 		trigger_signal(trigger1);
-	}
+	} 
 }
+
+// void
+// begin(int index)
+// {
+// 	fprintf(stderr, "begin(%d)\n", index);
+// 	if (index == 2001)
+// 	{
+// 		trigger_wait(trigger2);
+// 	} else if (index == 1002)
+// 	{
+// 		trigger_wait(trigger1);
+// 	}
+// }
+
+// void
+// end(int index)
+// {
+// 	fprintf(stderr, "end(%d)\n", index);
+// 	if (index == 1001)
+// 	{
+// 		trigger_signal(trigger2);
+// 	} else if (index == 2001)
+// 	{
+// 		trigger_signal(trigger1);
+// 	}
+// }
 
 void *
 func1(void *args)
