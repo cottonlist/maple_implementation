@@ -51,3 +51,7 @@ trigger_wait(trigger *t)
 	t->isSignaled = 0;
 	pthread_mutex_unlock(&(t->lock));
 }
+
+
+
+
