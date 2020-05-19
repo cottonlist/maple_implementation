@@ -9,9 +9,12 @@
 // int exec_order[] = {2001, 1002, 2003, 1004};
 // int exec_order[] = {1002, 2003, 1003, 2004};
 // int exec_order[] = {2002, 1002, 2003, 1003, 2004, 1004};
-int exec_order[] = {1001, 2003, 1004, 2004};
+// int exec_order[] = {1001, 2003, 2004, 1004, 2005};
+// int exec_order[] = {2002, 2003, 1001, 2004, 1003, 1004};
+int exec_order[] = {2002, 2003, 2004, 1002, 1003, 2005};
 
-int exec_length = sizeof(exec_order)/sizeof(int);
+
+int exec_length = sizeof(exec_order)/sizeof(exec_order[0]);
 
 // int exec_length = sizeof(exec_order);
 
@@ -24,20 +27,22 @@ void
 begin(int index)
 {
 	int isContained = 0;
+	int previous;
 	for (int i = 0; i < exec_length; ++i)
 	{
 		if (index == exec_order[i])
 		{
 			isContained = 1;
+			previous = i - 1;
 		}
 	}
 	fprintf(stderr, "begin(%d)\n", index);
 	if (index != exec_order[0] && isContained == 1)
 	{
-		if (index/1000 == 2)
+		if (index/1000 == 2 && exec_order[previous]/1000 == 1)
 		{
 			trigger_wait(trigger2);
-		} else if (index/1000 == 1)
+		} else if (index/1000 == 1 && exec_order[previous]/1000 == 2)
 		{
 			trigger_wait(trigger1);
 		}
@@ -48,20 +53,22 @@ void
 end(int index)
 {
 	int isContained = 0;
+	int next;
 	for (int i = 0; i < exec_length; ++i)
 	{
 		if (index == exec_order[i])
 		{
 			isContained = 1;
+			next = i + 1;
 		}
 	}
 	fprintf(stderr, "end(%d)\n", index);
 	if (index != exec_order[exec_length-1] && isContained == 1)
 	{
-		if (index/1000 == 1)
+		if (index/1000 == 1 && exec_order[next]/1000 == 2)
 		{
 			trigger_signal(trigger2);
-		} else if (index/1000 == 2)
+		} else if (index/1000 == 2 && exec_order[next]/1000 == 1)
 		{
 			trigger_signal(trigger1);
 		}
