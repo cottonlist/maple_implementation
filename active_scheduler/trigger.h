@@ -19,7 +19,16 @@ extern void
 trigger_wait(trigger *t);
 
 extern void
-inst_begin(int index, int exec_order[], int exec_length, trigger *trigger1, trigger *trigger2);
+inst_initialize(int *exec_order, int exec_length);
 
 extern void
-inst_end(int index, int exec_order[], int exec_length, trigger *trigger1, trigger *trigger2);
+inst_uninitialize();
+
+extern void
+inst_begin(int index);
+
+extern void
+inst_end(int index);
+
+extern void
+crash();
