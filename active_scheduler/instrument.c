@@ -26,9 +26,15 @@ inst_uninitialize()
 	trigger_destroy(trigger2);
 }
 
-void
-inst_begin(int index)
+struct info
+inst_begin(int index, int *accessed, int mode)
 {
+	struct info info_entity;
+	info_entity.thread_id = index / 1000;
+	info_entity.instruction_id = index % 1000;
+	info_entity.accessed_mem_addr = accessed;
+	info_entity.mode = mode;
+
 	int isContained = 0;
 	int previous;
 	for (int i = 0; i < current_exec_length; ++i)
@@ -50,6 +56,8 @@ inst_begin(int index)
 			trigger_wait(trigger1);
 		}
 	}
+
+	return info_entity;
 }
 
 void
