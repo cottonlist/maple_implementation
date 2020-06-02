@@ -10,6 +10,20 @@ trigger *trigger2;
 int *current_exec_order;
 int current_exec_length;
 
+// use mode variable to switch between profiler and scheduler
+// 0 if profiler, 1 if active scheduler
+int mode;
+
+void profiler_activator()
+{
+	mode = 0;
+}
+
+void scheduler_activator()
+{
+	mode = 1;
+}
+
 void
 inst_initialize(int *exec_order, int exec_length)
 {

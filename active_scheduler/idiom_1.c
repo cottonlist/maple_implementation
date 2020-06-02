@@ -66,7 +66,25 @@ main(void)
 {	
 
 	// int exec_order[] = {1001, 2001, 1002};
+	// first run is to execute profiler
+	profiler_activator();
 	
+	inst_initialize(exec_order, exec_length);
+	
+	pthread_t t1;
+	pthread_t t2;
+	
+	pthread_create(&t1, NULL, func1, NULL);
+	pthread_create(&t2, NULL, func2, NULL);
+	
+	pthread_join(t1, NULL);
+	pthread_join(t2, NULL);
+
+	inst_uninitialize();
+
+	// second run is to execute active scheduler
+	scheduler_activator();
+
 	inst_initialize(exec_order, exec_length);
 	
 	pthread_t t1;
