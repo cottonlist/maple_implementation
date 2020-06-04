@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include "trigger.h"
+#include "instrumenter.h"
 
 trigger *
 trigger_init()

@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include "trigger.h"
+#include "instrumenter.h"
 
 trigger *trigger1;
 trigger *trigger2;
@@ -12,16 +13,29 @@ int current_exec_length;
 
 // use mode variable to switch between profiler and scheduler
 // 0 if profiler, 1 if active scheduler
-int mode;
+// static int mode;
+
+struct info thd1[2];
+struct info thd2[2];
+
+// void
+// profiler_initialize()
+// {
+// 	struct info thd1[2];
+// 	struct info thd2[2];
+// }
+
+int thd1_index = 0;
+int thd2_index = 0;
 
 void profiler_activator()
 {
-	mode = 0;
+	phase = 0;
 }
 
 void scheduler_activator()
 {
-	mode = 1;
+	phase = 1;
 }
 
 void
@@ -40,63 +54,93 @@ inst_uninitialize()
 	trigger_destroy(trigger2);
 }
 
-struct info
+void
 inst_begin(int index, int *accessed, int mode)
 {
-	struct info info_entity;
-	info_entity.thread_id = index / 1000;
-	info_entity.instruction_id = index % 1000;
-	info_entity.accessed_mem_addr = accessed;
-	info_entity.mode = mode;
-
-	int isContained = 0;
-	int previous;
-	for (int i = 0; i < current_exec_length; ++i)
+	if (phase == 0)
 	{
-		if (index == current_exec_order[i])
+		if (index / 1000 == 1)
 		{
-			isContained = 1;
-			previous = i - 1;
-		}
-	}
-	fprintf(stderr, "begin(%d)\n", index);
-	if (index != current_exec_order[0] && isContained == 1)
-	{
-		if (index/1000 == 2 && current_exec_order[previous]/1000 == 1)
+			thd1[thd1_index].thread_id = 1;
+			thd1[thd1_index].instruction_id = index % 1000;
+			thd1[thd1_index].accessed_mem_addr = accessed;
+			thd1[thd1_index].mode = mode;
+			thd1_index++;
+		} else if (index / 1000 == 2)
 		{
-			trigger_wait(trigger2);
-		} else if (index/1000 == 1 && current_exec_order[previous]/1000 == 2)
-		{
-			trigger_wait(trigger1);
+			thd2[thd2_index].thread_id = 2;
+			thd2[thd2_index].instruction_id = index % 1000;
+			thd2[thd2_index].accessed_mem_addr = accessed;
+			thd2[thd2_index].mode = mode;
+			thd2_index++;
 		}
 	}
 
-	return info_entity;
+	else
+	{
+		int isContained = 0;
+		int previous;
+		for (int i = 0; i < current_exec_length; ++i)
+		{
+			if (index == current_exec_order[i])
+			{
+				isContained = 1;
+				previous = i - 1;
+			}
+		}
+		fprintf(stderr, "begin(%d)\n", index);
+		if (index != current_exec_order[0] && isContained == 1)
+		{
+			if (index/1000 == 2 && current_exec_order[previous]/1000 == 1)
+			{
+				trigger_wait(trigger2);
+			} else if (index/1000 == 1 && current_exec_order[previous]/1000 == 2)
+			{
+				trigger_wait(trigger1);
+			}
+		}
+	}
 }
 
 void
 inst_end(int index)
 {
-	int isContained = 0;
-	int next;
-	for (int i = 0; i < current_exec_length; ++i)
+	if (phase == 1)
 	{
-		if (index == current_exec_order[i])
+		int isContained = 0;
+		int next;
+		for (int i = 0; i < current_exec_length; ++i)
 		{
-			isContained = 1;
-			next = i + 1;
+			if (index == current_exec_order[i])
+			{
+				isContained = 1;
+				next = i + 1;
+			}
+		}
+		fprintf(stderr, "end(%d)\n", index);
+		if (index != current_exec_order[current_exec_length-1] && isContained == 1)
+		{
+			if (index/1000 == 1 && current_exec_order[next]/1000 == 2)
+			{
+				trigger_signal(trigger2);
+			} else if (index/1000 == 2 && current_exec_order[next]/1000 == 1)
+			{
+				trigger_signal(trigger1);
+			}
 		}
 	}
-	fprintf(stderr, "end(%d)\n", index);
-	if (index != current_exec_order[current_exec_length-1] && isContained == 1)
+}
+
+void test()
+{
+	printf("mode is %d\n", phase);
+	for (int i = 0; i < thd1_index; ++i)
 	{
-		if (index/1000 == 1 && current_exec_order[next]/1000 == 2)
-		{
-			trigger_signal(trigger2);
-		} else if (index/1000 == 2 && current_exec_order[next]/1000 == 1)
-		{
-			trigger_signal(trigger1);
-		}
+		printf("%d\t%d\t%p\t%d\n", thd1[i].thread_id, thd1[i].instruction_id, thd1[i].accessed_mem_addr, thd1[i].mode);
+	}
+	for (int i = 0; i < thd2_index; ++i)
+	{
+		printf("%d\t%d\t%p\t%d\n", thd2[i].thread_id, thd2[i].instruction_id, thd2[i].accessed_mem_addr, thd2[i].mode);
 	}
 }
 
