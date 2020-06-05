@@ -28,12 +28,12 @@ struct info thd2[2];
 int thd1_index = 0;
 int thd2_index = 0;
 
-void profiler_activator()
+void activate_profiler()
 {
 	phase = 0;
 }
 
-void scheduler_activator()
+void activate_scheduler()
 {
 	phase = 1;
 }

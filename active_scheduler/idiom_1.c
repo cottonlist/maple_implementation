@@ -70,7 +70,7 @@ main(void)
 	// first run is to execute profiler
 	// profiler_initialize();
 
-	profiler_activator();
+	activate_profiler();
 	test();
 	
 	// inst_initialize(exec_order, exec_length);
@@ -89,7 +89,7 @@ main(void)
 	// inst_uninitialize();
 
 	// second run is to execute active scheduler
-	scheduler_activator();
+	activate_scheduler();
 	test();
 
 	inst_initialize(exec_order, exec_length);

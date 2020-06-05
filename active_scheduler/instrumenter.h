@@ -31,10 +31,10 @@ extern void
 inst_end(int index);
 
 extern void
-profiler_activator();
+activate_profiler();
 
 extern void
-scheduler_activator();
+activate_scheduler();
 
 extern void
 test();
