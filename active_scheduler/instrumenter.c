@@ -13,7 +13,7 @@ int current_exec_length;
 
 // use mode variable to switch between profiler and scheduler
 // 0 if profiler, 1 if active scheduler
-// static int mode;
+static int phase;
 
 struct info thd1[2];
 struct info thd2[2];
@@ -28,12 +28,12 @@ struct info thd2[2];
 int thd1_index = 0;
 int thd2_index = 0;
 
-void profiler_activator()
+void activate_profiler()
 {
 	phase = 0;
 }
 
-void scheduler_activator()
+void activate_scheduler()
 {
 	phase = 1;
 }
