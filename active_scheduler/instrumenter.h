@@ -3,13 +3,19 @@
 #define PROFILER 0
 #define SCHEDULER 1
 
+enum {
+    NONE = 0,                   /* reserved */
+    MODE_READ,                  /* 1 */
+    MODE_WRITE,                 /* 2 */
+};
+
 struct info{
 	int thread_id;
 	int instruction_id;
 	int *accessed_mem_addr;
 	// int is_mutex;
 	// pthread_mutex_t lock;
-	int mode; // 0 if read, 1 if write
+	int mode; // 1 if read, 2 if write
 };
 
 extern void

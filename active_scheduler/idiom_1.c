@@ -26,11 +26,11 @@ int exec_length = sizeof(exec_order) / sizeof(exec_order[0]);
 void *
 func1(void *arg)
 {
-	inst_begin(1001, &a, 0);
+	inst_begin(1001, &a, MODE_WRITE);
 	a = 1;
 	inst_end(1001);
 
-	inst_begin(1002, &a, 0);
+	inst_begin(1002, &a, MODE_WRITE);
 	a = 2;
 	inst_end(1002);
 
@@ -46,11 +46,11 @@ func1(void *arg)
 void *
 func2 (void *arg)
 {
-	inst_begin(2001, &a, 1);
+	inst_begin(2001, &a, MODE_READ);
 	assert(a != 1);
 	inst_end(2001);
 
-	inst_begin(2002, &b, 0);
+	inst_begin(2002, &b, MODE_WRITE);
 	b = 1;
 	inst_end(2002);
 
