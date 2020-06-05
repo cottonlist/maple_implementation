@@ -1,5 +1,5 @@
 # Makefile
-all: idiom_1 idiom_2 idiom_3 idiom_4 idiom_5
+all: idiom_1 # idiom_2 idiom_3 idiom_4 idiom_5
 clean:
 	rm idiom_1 idiom_2 idiom_3 idiom_4 idiom_5
 run: idiom_1

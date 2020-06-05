@@ -12,8 +12,6 @@ struct info{
 	int mode; // 0 if read, 1 if write
 };
 
-int phase;
-
 extern void
 inst_initialize(int *exec_order, int exec_length);
 
