@@ -7,15 +7,6 @@
 #include "trigger.h"
 #include "instrumenter.h"
 
-// struct info thd1[2];
-// struct info thd2[2];
-// int thd1_index = 0;
-// int thd2_index = 0;
-// int exec_order[10][10];
-// int exec_order_index = 0;
-
-// int profiled_ins[4];
-
 int a = 0;
 int b = 0;
 
@@ -71,10 +62,7 @@ main(void)
 	// profiler_initialize();
 
 	activate_profiler();
-	test();
-	
-	// inst_initialize(exec_order, exec_length);
-	
+		
 	pthread_t t1;
 	pthread_t t2;
 	
@@ -84,13 +72,11 @@ main(void)
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
 
-	
-
-	// inst_uninitialize();
+	create_exec_order();
+	init_exec_order();
 
 	// second run is to execute active scheduler
 	activate_scheduler();
-	test();
 
 	inst_initialize(exec_order, exec_length);
 	
@@ -104,22 +90,6 @@ main(void)
 	pthread_join(t4, NULL);
 
 	inst_uninitialize();
-
-	// for (int m = 0; m < thd1_index; ++m)
-	// {
-	// 	for (int n = 0; n < thd2_index; ++n)
-	// 	{
-	// 		if (thd1[m].accessed_mem_addr == thd2[n].accessed_mem_addr)
-	// 		{
-	// 			printf("%d, %d\n", thd1[m].thread_id*1000+thd1[m].instruction_id, thd2[n].thread_id*1000+thd2[n].instruction_id);
-	// 		}
-	// 	}
-	// }
-
-	// for (int i = 0; i < 4; ++i)
-	// {
-	// 	printf("%p\n", infos[i].accessed_mem_addr);
-	// }
 
 	exit(0);
 }

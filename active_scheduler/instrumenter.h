@@ -3,6 +3,8 @@
 #define PROFILER 0
 #define SCHEDULER 1
 
+#define FILENAME "exec_order.txt"
+
 enum {
     NONE = 0,                   /* reserved */
     MODE_READ,                  /* 1 */
@@ -37,7 +39,10 @@ extern void
 activate_scheduler();
 
 extern void
-test();
+create_exec_order();
+
+extern void
+init_exec_order();
 
 extern void
 crash();

@@ -8,8 +8,11 @@
 
 trigger *trigger1;
 trigger *trigger2;
-int *current_exec_order;
+int **current_exec_order;
 int current_exec_length;
+int num_of_exec_order = 0;
+
+FILE *fp;
 
 // use mode variable to switch between profiler and scheduler
 // 0 if profiler, 1 if active scheduler
@@ -131,16 +134,57 @@ inst_end(int index)
 	}
 }
 
-void test()
+void create_exec_order()
 {
-	printf("mode is %d\n", phase);
+	if ((fp = fopen(FILENAME, "a")) == NULL)
+	{
+		perror("fopen");
+		exit(1);
+	}
+
 	for (int i = 0; i < thd1_index; ++i)
 	{
-		printf("%d\t%d\t%p\t%d\n", thd1[i].thread_id, thd1[i].instruction_id, thd1[i].accessed_mem_addr, thd1[i].mode);
+		for (int j = 0; j < thd2_index; ++j)
+		{
+			if (thd1[i].accessed_mem_addr == thd2[j].accessed_mem_addr)
+			{
+				fprintf(fp, "One of exec_order is %d, %d\n", thd1[i].thread_id*1000+thd1[i].instruction_id, thd2[j].thread_id*1000+thd2[j].instruction_id);
+				num_of_exec_order++;
+				fprintf(fp, "One of exec_order is %d, %d\n", thd2[j].thread_id*1000+thd2[j].instruction_id, thd1[i].thread_id*1000+thd1[i].instruction_id);
+				num_of_exec_order++;
+			}
+		}
 	}
-	for (int i = 0; i < thd2_index; ++i)
+
+	if (fclose(fp) == EOF)
 	{
-		printf("%d\t%d\t%p\t%d\n", thd2[i].thread_id, thd2[i].instruction_id, thd2[i].accessed_mem_addr, thd2[i].mode);
+		perror("fclose");
+		exit(1);
+	}
+	
+}
+
+void init_exec_order()
+{
+	current_exec_order = (int**) malloc(sizeof(int) * 2 * num_of_exec_order); // multiply by 2 because idiom1 only involves 2 INS
+
+	if ((fp = fopen(FILENAME, "r")) == NULL)
+	{
+		perror("fopen");
+		exit(1);
+	}
+
+	for (int i = 0; i < num_of_exec_order; ++i)
+	{
+		/* initialize all exec_order */
+	}
+
+	free(current_exec_order);
+
+	if (fclose(fp) == EOF)
+	{
+		perror("fclose");
+		exit(1);
 	}
 }
 
