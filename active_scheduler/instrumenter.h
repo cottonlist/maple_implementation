@@ -5,13 +5,14 @@
 
 #define FILENAME "exec_order.txt"
 
-enum {
+enum mode {
     NONE = 0,                   /* reserved */
     MODE_READ,                  /* 1 */
     MODE_WRITE,                 /* 2 */
 };
 
 struct info{
+	int index;
 	int thread_id;
 	int instruction_id;
 	int *accessed_mem_addr;
@@ -21,7 +22,7 @@ struct info{
 };
 
 extern void
-inst_initialize(int *exec_order, int exec_length);
+inst_initialize();
 
 extern void
 inst_uninitialize();
@@ -43,6 +44,12 @@ create_exec_order();
 
 extern void
 init_exec_order();
+
+extern void
+assign_order();
+
+extern void
+test(pthread_t t1, pthread_t t2, void *func1, void *func2);
 
 extern void
 crash();
