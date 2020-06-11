@@ -11,14 +11,21 @@ enum mode {
     MODE_WRITE,                 /* 2 */
 };
 
+enum type {
+	VAR, 						/* shared variable */
+	SYNC,						/* synchronization object */
+};
+
 struct info{
 	int index;
+	int type;
 	int thread_id;
 	int instruction_id;
 	int *accessed_mem_addr;
-	// int is_mutex;
-	// pthread_mutex_t lock;
 	int mode; // 1 if read, 2 if write
+	pthread_mutex_t *lock;
+	int first_in_mutex;
+	int last_in_mutex;
 };
 
 extern void
@@ -28,7 +35,7 @@ extern void
 inst_uninitialize();
 
 extern void
-inst_begin(int index, int *accessed, int mode);
+inst_begin(int index, int type, int *accessed, int mode, pthread_mutex_t *lock, int first, int last);
 
 extern void
 inst_end(int index);
