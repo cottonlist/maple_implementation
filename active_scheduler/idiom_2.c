@@ -4,62 +4,59 @@
 #include <unistd.h>
 
 #include "trigger.h"
+#include "instrumenter.h"
 
-int exec_order[] = {1001, 2001, 1002, 2002};
-int exec_length = sizeof(exec_order)/sizeof(exec_order[0]);
+pthread_mutex_t lock;
 
-typedef struct
-{	
-	int score;
-}student;
+int a = 0;
+int b = 0;
 
 void *
-func1 (void *std)
+func1 (void *arg)
 {
-	inst_begin(1001);
-	if (((student *)std)->score >= 60){
-		inst_end(1001);
-		inst_begin(1002);
-		if (((student *)std)->score < 60){
-			crash();
-		}
-		inst_end(1002);
+	inst_begin(1001, VAR, &a, MODE_WRITE, NULL, 0, 0);
+	a = 1;
+	inst_end(1001);
+
+	inst_begin(1002, VAR, &a, MODE_READ, NULL, 0, 0);
+	if (a == 2)
+	{
+		crash();
 	}
+	inst_end(1002);
+
 	return NULL;
 }
 
 void *
-func2 (void *std)
+func2 (void *arg)
 {
-	inst_begin(2001);
-	((student *)std)->score = 30;
-	//std = NULL;
+	inst_begin(2001, VAR, &a, MODE_WRITE, NULL, 0, 0);
+	a = a + 1;
 	inst_end(2001);
-	inst_begin(2002);
-	((student *)std)->score = 80;
-	inst_end(2002);
+
 	return NULL;
 }
 
 int
 main()
 {
-	student taro = {80};
-
-	student *student1 = &taro;
-
-	inst_initialize(exec_order, exec_length);
-
+	pthread_mutex_init(&lock, NULL);
+	// run profiler
+	activate_profiler();
 	pthread_t t1;
 	pthread_t t2;
-
-	pthread_create(&t1, NULL, func1, (void *)student1);
-	pthread_create(&t2, NULL, func2, (void *)student1);
-	
+	pthread_create(&t1, NULL, func1, NULL);
+	pthread_create(&t2, NULL, func2, NULL);
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
+	create_exec_order();
+	activate_scheduler();
 
-	inst_uninitialize();
+	// run active scheduler
+	test(t1, t2, func1, func2);
+
+	pthread_mutex_destroy(&lock);
 
 	exit(0);
 }

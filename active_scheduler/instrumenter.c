@@ -144,6 +144,33 @@ inst_end(int index)
 	}
 }
 
+// void create_exec_order()
+// {
+// 	for (int i = 0; i < thd1_index; ++i)
+// 	{
+// 		for (int j = 0; j < thd2_index; ++j)
+// 		{
+// 			if (thd1[i].accessed_mem_addr == thd2[j].accessed_mem_addr && thd1[i].type == VAR)
+// 			{
+// 				if (thd1[i].mode == MODE_READ && thd2[j].mode == MODE_WRITE)
+// 				{
+// 					size[num] = 2;
+// 					exec_order[num] = (int *)malloc(sizeof(int) * size[num]);
+// 					exec_order[num][0] = thd2[j].index;
+// 					exec_order[num][1] = thd1[i].index;
+// 				} else if (thd1[i].mode == MODE_WRITE && thd2[j].mode == MODE_READ)
+// 				{
+// 					size[num] = 2;
+// 					exec_order[num] = (int *)malloc(sizeof(int) * size[num]);
+// 					exec_order[num][0] = thd1[i].index;
+// 					exec_order[num][1] = thd2[j].index;
+// 				}
+				
+// 			}
+// 		}
+// 	}
+// }
+
 void create_exec_order()
 {
 	// clean file
