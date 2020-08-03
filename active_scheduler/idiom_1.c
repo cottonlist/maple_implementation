@@ -40,21 +40,21 @@ func1(void *arg)
 	c = 1;
 	inst_end(1005);
 
-	inst_begin(1006, SYNC, (int *)&lock, MODE_READ, &lock, 0, 0);
-	pthread_mutex_lock(&lock);
-	inst_end(1006);
+	// inst_begin(1006, SYNC, (int *)&lock, MODE_READ, &lock, 0, 0);
+	// pthread_mutex_lock(&lock);
+	// inst_end(1006);
 
-	inst_begin(1007, VAR, &d, MODE_WRITE, &lock, 1, 0);
-	d = 1;
-	inst_end(1007);
+	// inst_begin(1007, VAR, &d, MODE_WRITE, &lock, 1, 0);
+	// d = 1;
+	// inst_end(1007);
 
-	inst_begin(1008, VAR, &d, MODE_WRITE, &lock, 0, 1);
-	d = 2;
-	inst_end(1008);
+	// inst_begin(1008, VAR, &d, MODE_WRITE, &lock, 0, 1);
+	// d = 2;
+	// inst_end(1008);
 
-	inst_begin(1009, SYNC, (int *)&lock, MODE_READ, &lock, 0, 0);
-	pthread_mutex_unlock(&lock);
-	inst_end(1009);
+	// inst_begin(1009, SYNC, (int *)&lock, MODE_READ, &lock, 0, 0);
+	// pthread_mutex_unlock(&lock);
+	// inst_end(1009);
 
 	// inst_begin(1001);
 	// a = 1;
@@ -90,20 +90,20 @@ func2 (void *arg)
 	}
 	inst_end(2004);
 
-	inst_begin(2005, SYNC, (int *)&lock, MODE_READ, &lock, 0, 0);
-	pthread_mutex_lock(&lock);
-	inst_end(2005);
+	// inst_begin(2005, SYNC, (int *)&lock, MODE_READ, &lock, 0, 0);
+	// pthread_mutex_lock(&lock);
+	// inst_end(2005);
 
-	inst_begin(2006, VAR, &d, MODE_READ, &lock, 1, 1);
-	if (d == 1)
-	{
-		crash();
-	}
-	inst_end(2006);
+	// inst_begin(2006, VAR, &d, MODE_READ, &lock, 1, 1);
+	// if (d == 1)
+	// {
+	// 	crash();
+	// }
+	// inst_end(2006);
 
-	inst_begin(2007, SYNC, (int *)&lock, MODE_READ, &lock, 0, 0);
-	pthread_mutex_unlock(&lock);
-	inst_end(2007);
+	// inst_begin(2007, SYNC, (int *)&lock, MODE_READ, &lock, 0, 0);
+	// pthread_mutex_unlock(&lock);
+	// inst_end(2007);
 
 	// inst_begin(2001);
 	// if (a==1) {

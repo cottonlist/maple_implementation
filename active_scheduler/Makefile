@@ -1,15 +1,15 @@
 # Makefile
-all: idiom_2 # idiom_1 idiom_3 idiom_4 idiom_5
+all: idiom_1 idiom_2 idiom_3 # idiom_4 idiom_5
 clean:
 	rm idiom_1 idiom_2 idiom_3 idiom_4 idiom_5
-run: idiom_2
-	./idiom_2
-idiom_1: idiom_1.c trigger.c instrumenter.c
-	gcc -pthread -o idiom_1 idiom_1.c trigger.c instrumenter.c
-idiom_2: idiom_2.c trigger.c instrumenter2.c
-	gcc -pthread -o idiom_2 idiom_2.c trigger.c instrumenter2.c
-idiom_3: idiom_3.c trigger.c instrumenter.c
-	gcc -pthread -o idiom_3 idiom_3.c trigger.c instrumenter.c
+run: idiom_3
+	./idiom_3
+idiom_1: idiom_1.c trigger.c instrumenter_1.c
+	gcc -pthread -o idiom_1 idiom_1.c trigger.c instrumenter_1.c
+idiom_2: idiom_2.c trigger.c instrumenter_2.c
+	gcc -pthread -o idiom_2 idiom_2.c trigger.c instrumenter_2.c
+idiom_3: idiom_3.c trigger.c instrumenter_3.c
+	gcc -pthread -o idiom_3 idiom_3.c trigger.c instrumenter_3.c
 idiom_4: idiom_4.c trigger.c instrumenter.c
 	gcc -pthread -o idiom_4 idiom_4.c trigger.c instrumenter.c
 idiom_5: idiom_5.c trigger.c instrumenter.c

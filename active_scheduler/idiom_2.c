@@ -25,6 +25,10 @@ func1 (void *arg)
 	}
 	inst_end(1002);
 
+	inst_begin(1003, VAR, &b, MODE_WRITE, NULL, 0, 0);
+	b = b + 1;
+	inst_end(1003);
+
 	return NULL;
 }
 
@@ -34,6 +38,17 @@ func2 (void *arg)
 	inst_begin(2001, VAR, &a, MODE_WRITE, NULL, 0, 0);
 	a = a + 1;
 	inst_end(2001);
+
+	inst_begin(2002, VAR, &b, MODE_WRITE, NULL, 0, 0);
+	b = 1;
+	inst_end(2002);
+
+	inst_begin(2003, VAR, &b, MODE_READ, NULL, 0, 0);
+	if (b == 2)
+	{
+		crash();
+	}
+	inst_end(2003);
 
 	return NULL;
 }
