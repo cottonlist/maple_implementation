@@ -37,6 +37,10 @@ func1(void *arg)
 	b++;
 	inst_end(1004);
 
+	inst_begin(1005, VAR, &b, MODE_WRITE, NULL, 0, 0);
+	b = 5;
+	inst_end(1005);
+
 	// inst_begin(1003, VAR, &b, MODE_READ, NULL, 0, 0);
 	// if (b == 1)
 	// {
@@ -98,7 +102,7 @@ main()
 	pthread_create(&t2, NULL, func2, NULL);
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
-	create_exec_order();
+	create_exec_order(3);
 	activate_scheduler();
 
 	// run active scheduler

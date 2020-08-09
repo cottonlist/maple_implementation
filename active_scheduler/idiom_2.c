@@ -65,7 +65,7 @@ main()
 	pthread_create(&t2, NULL, func2, NULL);
 	pthread_join(t1, NULL);
 	pthread_join(t2, NULL);
-	create_exec_order();
+	create_exec_order(2);
 	activate_scheduler();
 
 	// run active scheduler

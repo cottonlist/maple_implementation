@@ -9,11 +9,14 @@ enum mode {
     NONE = 0,                   /* reserved */
     MODE_READ,                  /* 1 */
     MODE_WRITE,                 /* 2 */
+    MODE_LOCK,                  /* 3 */
+    MODE_UNLOCK,                /* 4 */
 };
 
 enum type {
 	VAR, 						/* shared variable */
-	SYNC,						/* synchronization object */
+	SYNC,                       /* synchronization object */
+	OTHER,						/* others */
 };
 
 struct info{
@@ -47,7 +50,7 @@ extern void
 activate_scheduler();
 
 extern void
-create_exec_order();
+create_exec_order(int which_idiom);
 
 extern void
 init_exec_order();
