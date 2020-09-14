@@ -173,7 +173,8 @@ void create_exec_order(int which_idiom)
 				{
 					if (thd1[i].accessed_mem_addr == thd2[j].accessed_mem_addr && thd1[i].type == VAR)
 					{
-						if (thd1[i].mode == MODE_WRITE && thd2[j].mode == MODE_READ)
+						if ((thd1[i].mode == MODE_WRITE && thd2[j].mode == MODE_READ)
+							|| (thd1[i].mode == MODE_READ && thd2[j].mode == MODE_WRITE))
 						{
 							if (thd1[i].instruction_id == thd1_index
 								&& thd2[j].instruction_id == 1)
@@ -218,56 +219,67 @@ void create_exec_order(int which_idiom)
 									exec_order[num][0], exec_order[num][1], 
 									exec_order[num][2], exec_order[num][3]);
 			 					num++;
-							}
-						} else if (thd1[i].mode == MODE_READ
-							&& thd2[j].mode == MODE_WRITE)
-						{
-							if (thd2[j].instruction_id == thd2_index
-								&& thd1[i].instruction_id == 1)
-							{
-								size[num] = 2;
-								exec_order[num] = (int *)malloc(sizeof(int) * size[num]);
-								exec_order[num][0] = thd2[j].index;
-								exec_order[num][1] = thd1[i].index;
-								fprintf(fp, "%d, %d\n", exec_order[num][0], exec_order[num][1]);
-				 					num++;
-							} else if (thd2[j].instruction_id == thd2_index
-								&& thd1[i].instruction_id != 1)
-							{
-								size[num] = 3;
-								exec_order[num] = (int *)malloc(sizeof(int) * size[num]);
-								exec_order[num][0] = thd1[i].index - 1;
-								exec_order[num][1] = thd2[j].index;
-								exec_order[num][2] = thd1[i].index;
-								fprintf(fp, "%d, %d, %d\n", 
-									exec_order[num][0], exec_order[num][1], exec_order[num][2]);
-			 					num++;
-							} else if (thd1[i].instruction_id == 1
-								&& thd2[j].instruction_id != thd2_index)
-							{
-								size[num] = 3;
-								exec_order[num] = (int *)malloc(sizeof(int) * size[num]);
-								exec_order[num][0] = thd2[j].index;
-								exec_order[num][1] = thd1[i].index;
-								exec_order[num][2] = thd2[j].index + 1;
-								fprintf(fp, "%d, %d, %d\n", 
-									exec_order[num][0], exec_order[num][1], exec_order[num][2]);
-			 					num++;
-							} else
-							{
 								size[num] = 4;
 								exec_order[num] = (int *)malloc(sizeof(int) * size[num]);
 								exec_order[num][0] = thd1[i].index - 1;
 								exec_order[num][1] = thd2[j].index;
 								exec_order[num][2] = thd1[i].index;
-								exec_order[num][3] = thd2[j].index + 1;
+								exec_order[num][3] = thd2[j].index + 1;	
 								fprintf(fp, "%d, %d, %d, %d\n", 
 									exec_order[num][0], exec_order[num][1], 
 									exec_order[num][2], exec_order[num][3]);
-			 					num++;
+			 					num++;	 					
 							}
-						}
-						num_of_exec_order += 1;
+						} 
+						// if ((thd1[i].mode == MODE_READ && thd2[j].mode == MODE_WRITE)
+						// 	|| (thd1[i].mode == MODE_WRITE && thd2[j].mode == MODE_READ))
+						// {
+						// 	if (thd2[j].instruction_id == thd2_index
+						// 		&& thd1[i].instruction_id == 1)
+						// 	{
+						// 		size[num] = 2;
+						// 		exec_order[num] = (int *)malloc(sizeof(int) * size[num]);
+						// 		exec_order[num][0] = thd2[j].index;
+						// 		exec_order[num][1] = thd1[i].index;
+						// 		fprintf(fp, "%d, %d\n", exec_order[num][0], exec_order[num][1]);
+				 	// 				num++;
+						// 	} else if (thd2[j].instruction_id == thd2_index
+						// 		&& thd1[i].instruction_id != 1)
+						// 	{
+						// 		size[num] = 3;
+						// 		exec_order[num] = (int *)malloc(sizeof(int) * size[num]);
+						// 		exec_order[num][0] = thd1[i].index - 1;
+						// 		exec_order[num][1] = thd2[j].index;
+						// 		exec_order[num][2] = thd1[i].index;
+						// 		fprintf(fp, "%d, %d, %d\n", 
+						// 			exec_order[num][0], exec_order[num][1], exec_order[num][2]);
+			 		// 			num++;
+						// 	} else if (thd1[i].instruction_id == 1
+						// 		&& thd2[j].instruction_id != thd2_index)
+						// 	{
+						// 		size[num] = 3;
+						// 		exec_order[num] = (int *)malloc(sizeof(int) * size[num]);
+						// 		exec_order[num][0] = thd2[j].index;
+						// 		exec_order[num][1] = thd1[i].index;
+						// 		exec_order[num][2] = thd2[j].index + 1;
+						// 		fprintf(fp, "%d, %d, %d\n", 
+						// 			exec_order[num][0], exec_order[num][1], exec_order[num][2]);
+			 		// 			num++;
+						// 	} else
+						// 	{
+						// 		size[num] = 4;
+						// 		exec_order[num] = (int *)malloc(sizeof(int) * size[num]);
+						// 		exec_order[num][0] = thd1[i].index - 1;
+						// 		exec_order[num][1] = thd2[j].index;
+						// 		exec_order[num][2] = thd1[i].index;
+						// 		exec_order[num][3] = thd2[j].index + 1;
+						// 		fprintf(fp, "%d, %d, %d, %d\n", 
+						// 			exec_order[num][0], exec_order[num][1], 
+						// 			exec_order[num][2], exec_order[num][3]);
+			 		// 			num++;
+						// 	}
+						// }
+						num_of_exec_order += 2;
 					}
 				}
 			}
